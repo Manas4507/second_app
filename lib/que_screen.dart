@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:second_app/answerbutton.dart';
 import 'package:second_app/data/questions.dart';
+import 'package:google_fonts/google_fonts.dart';
 class QuestionsScreen extends StatefulWidget{
- const QuestionsScreen({super.key});
+ const QuestionsScreen({super.key,required this.onSelectAnswer});
 
- 
+ final void Function(String answer) onSelectAnswer;
   @override
   State <QuestionsScreen> createState(){
     return _QuestionsScreenState();
@@ -15,8 +16,8 @@ class _QuestionsScreenState extends State<QuestionsScreen>{
 
   var currentQuestionIndex=0;
 
-  void answerQuestion(){
-
+  void answerQuestion(String selectedAnswer){
+    widget.onSelectAnswer(selectedAnswer);
     setState(() {
       currentQuestionIndex++;
     });
@@ -37,12 +38,21 @@ class _QuestionsScreenState extends State<QuestionsScreen>{
           mainAxisAlignment: MainAxisAlignment.center,
          crossAxisAlignment: CrossAxisAlignment.stretch,
           
-          children: [
-             Text(currentQuestion.text,textAlign: TextAlign.center,),
+          children: <Widget>[
+             Text(currentQuestion.text,textAlign: TextAlign.center, style: GoogleFonts.lato(
+                textStyle: Theme.of(context).textTheme.displayLarge,
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.normal,
+              ),
+             ),
             const SizedBox(height: 25,),
-        
+            
             ...currentQuestion.getShuffledAnswer().map((answer) {
-              return AnswerButton(answerText: answer, ontap: answerQuestion,);
+              return Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: AnswerButton(answerText: answer, ontap: (){ answerQuestion(answer);},),
+              );
             }),
             
             // AnswerButton(answerText: currentQuestion.ans[0], ontap: (){}),
